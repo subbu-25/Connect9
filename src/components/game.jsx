@@ -495,96 +495,227 @@ export default function GAME() {
   }, [correctorder, correctorderval, allNumbersCollected]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>CONNECT9</h2>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <p>
-          Numbers visited in order: {correctorder ? "Yes" : "No"} | Expected
-          next: {correctorderval + 1} | Cells visited: {visitedCount.current}/36
-        </p>
-
-        {/* Wrap buttons in a flex container with gap */}
-        <div
+    <div
+      style={{
+        padding: "20px",
+        display: "flex",
+        gap: "30px",
+        alignItems: "flex-start",
+      }}
+    >
+      {/* Rules Panel - Left Side */}
+      <div
+        style={{
+          width: "300px",
+          backgroundColor: "#f8f9fa",
+          border: "2px solid #dee2e6",
+          borderRadius: "10px",
+          padding: "20px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h3
           style={{
-            display: "flex",
-            gap: "20px",
-            justifyContent: "center",
-            marginTop: "10px",
+            margin: "0 0 15px 0",
+            color: "#2c3e50",
+            textAlign: "center",
           }}
         >
-          {/* Animation Button */}
-          <button
-            onClick={startPathAnimation}
-            disabled={path.length === 0}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              backgroundColor: isAnimating ? "#f44336" : "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: path.length === 0 ? "not-allowed" : "pointer",
-              transition: "background-color 0.3s ease",
-            }}
-          >
-            {isAnimating ? "Stop Animation" : "Animate Path"}
-          </button>
+          🎮 Connect9 Rules
+        </h3>
 
-          {/* Generate New Puzzle Button */}
-          <button
-            onClick={generateNewPuzzle}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              backgroundColor: "#2196F3",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              transition: "background-color 0.3s ease",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#2196F3")}
-          >
-            Generate New Puzzle
-          </button>
+        <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#495057" }}>
+          <div style={{ marginBottom: "15px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#007bff",
+                fontSize: "16px",
+              }}
+            >
+              🎯 Objective
+            </h4>
+            <p style={{ margin: "0 0 10px 0" }}>
+              Collect numbers 1-9 in correct order while visiting all 36 cells
+              in the grid.
+            </p>
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#28a745",
+                fontSize: "16px",
+              }}
+            >
+              🎮 Controls
+            </h4>
+            <ul style={{ margin: "0", paddingLeft: "20px" }}>
+              <li>
+                <strong>Arrow Keys:</strong> Move player
+              </li>
+              <li>
+                <strong>Spacebar:</strong> Undo last move
+              </li>
+            </ul>
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#dc3545",
+                fontSize: "16px",
+              }}
+            >
+              📋 Game Rules
+            </h4>
+            <ul style={{ margin: "0", paddingLeft: "20px" }}>
+              <li>Numbers must be visited in order (1→2→3→...→9)</li>
+              <li>Each cell can only be visited once</li>
+              <li>Plan your path carefully to avoid getting trapped</li>
+            </ul>
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#6f42c1",
+                fontSize: "16px",
+              }}
+            >
+              🏆 Scoring
+            </h4>
+            <ul style={{ margin: "0", paddingLeft: "20px" }}>
+              <li>
+                <strong>Perfect:</strong> All 9 numbers + all 36 cells
+              </li>
+              <li>
+                <strong>Good:</strong> All 9 numbers in order
+              </li>
+              <li>
+                <strong>Keep trying:</strong> Numbers out of order
+              </li>
+            </ul>
+          </div>
+
+          <div style={{ marginBottom: "10px" }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#fd7e14",
+                fontSize: "16px",
+              }}
+            >
+              💡 Tips
+            </h4>
+            <ul style={{ margin: "0", paddingLeft: "20px" }}>
+              <li>Use "Animate Path" to see the solution</li>
+              <li>Plan ahead to avoid dead ends</li>
+              <li>Use undo (spacebar) strategically</li>
+            </ul>
+          </div>
         </div>
-
-        {isAnimating && (
-          <p style={{ marginTop: "10px", color: "#666" }}>
-            Animating step {currentAnimationIndex + 1} of {path.length}
-          </p>
-        )}
       </div>
 
-      <table style={{ borderCollapse: "collapse", margin: "20px auto" }}>
-        <tbody>
-          {grid.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, colIndex) => (
-                <Cell
-                  key={colIndex}
-                  value={cell}
-                  row={rowIndex}
-                  col={colIndex}
-                  isStart={
-                    startpoint.row === rowIndex && startpoint.col === colIndex
-                  }
-                  isEnd={endpoint.row === rowIndex && endpoint.col === colIndex}
-                  isPlayer={
-                    playerPosition.row === rowIndex &&
-                    playerPosition.col === colIndex
-                  }
-                  isVisited={isCellVisited(rowIndex, colIndex)}
-                  isAnimating={isCellAnimating(rowIndex, colIndex)}
-                />
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Game Area - Right Side */}
+      <div style={{ flex: 1 }}>
+        <h2 style={{ textAlign: "center", margin: "0 0 20px 0" }}>Connect9</h2>
+
+        <div style={{ textAlign: "center", marginBottom: "10px" }}>
+          <p>
+            Numbers visited in order: {correctorder ? "Yes" : "No"} | Expected
+            next: {correctorderval + 1} | Cells visited: {visitedCount.current}
+            /36
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              justifyContent: "center",
+              marginTop: "10px",
+            }}
+          >
+            {/* Animation Button */}
+            <button
+              onClick={startPathAnimation}
+              disabled={path.length === 0}
+              style={{
+                padding: "10px 20px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                backgroundColor: isAnimating ? "#f44336" : "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: path.length === 0 ? "not-allowed" : "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+            >
+              {isAnimating ? "Stop Animation" : "Animate Path"}
+            </button>
+
+            {/* Generate New Puzzle Button */}
+            <button
+              onClick={generateNewPuzzle}
+              style={{
+                padding: "10px 20px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                backgroundColor: "#2196F3",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#2196F3")}
+            >
+              Generate New Puzzle
+            </button>
+          </div>
+
+          {isAnimating && (
+            <p style={{ marginTop: "10px", color: "#666" }}>
+              Animating step {currentAnimationIndex + 1} of {path.length}
+            </p>
+          )}
+        </div>
+
+        <table style={{ borderCollapse: "collapse", margin: "20px auto" }}>
+          <tbody>
+            {grid.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, colIndex) => (
+                  <Cell
+                    key={colIndex}
+                    value={cell}
+                    row={rowIndex}
+                    col={colIndex}
+                    isStart={
+                      startpoint.row === rowIndex && startpoint.col === colIndex
+                    }
+                    isEnd={
+                      endpoint.row === rowIndex && endpoint.col === colIndex
+                    }
+                    isPlayer={
+                      playerPosition.row === rowIndex &&
+                      playerPosition.col === colIndex
+                    }
+                    isVisited={isCellVisited(rowIndex, colIndex)}
+                    isAnimating={isCellAnimating(rowIndex, colIndex)}
+                  />
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <ToastContainer />
     </div>
   );
